@@ -9,9 +9,14 @@ import * as http from "http";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
+import { fileURLToPath } from "url";
 import { execFileSync } from "child_process";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const CONFIG_PATH = path.join(os.homedir(), ".familysearch-mcp", "session.json");
+const PROJECT_ROOT = path.resolve(__dirname, "..");
 const FAMILYSEARCH_URL = "https://www.familysearch.org";
 
 interface StoredCookie {
@@ -85,7 +90,7 @@ async function fetchWithCookies(url: string, cookies: StoredCookie[]): Promise<{
 }
 
 async function extractBrowserCookies(): Promise<StoredCookie[]> {
-  const scriptPath = path.join(path.dirname(CONFIG_PATH), "get_cookies.py");
+  const scriptPath = path.join(PROJECT_ROOT, "get_cookies.py");
   try {
     const output = execFileSync("python3", [scriptPath], { encoding: "utf-8", timeout: 10000 });
     const parsed = JSON.parse(output);
