@@ -36,6 +36,23 @@ node /path/to/familysearch-mcp/dist/index.js
 
 On first run, it extracts cookies from your browser automatically. Session persists in `~/.familysearch-mcp/session.json` and refreshes after 24 hours.
 
+### OpenCode Configuration
+
+To use with [OpenCode](https://opencode.ai), add an entry under `mcp` in your `opencode.json`:
+
+```json
+{
+  "mcp": {
+    "familysearch": {
+      "command": "node",
+      "args": ["/path/to/familysearch-mcp/dist/index.js"]
+    }
+  }
+}
+```
+
+Place this in your project's `opencode.json` or in `~/.opencode/bin/opencode.json` for global availability.
+
 ## Tools
 
 ### Person & Tree
