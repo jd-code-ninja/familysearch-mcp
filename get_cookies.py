@@ -1,16 +1,29 @@
 import json, sys
+cj = None
 try:
     import browser_cookie3
-    cj = browser_cookie3.arc(domain_name="familysearch.org")
-except:
+except Exception:
+    print(json.dumps({"error": "browser-cookie3 not installed. Run: pip3 install browser-cookie3"}))
+    sys.exit(1)
+
+for loader in [
+    lambda: browser_cookie3.arc(domain_name="familysearch.org"),
+    lambda: browser_cookie3.chrome(domain_name="familysearch.org"),
+    lambda: browser_cookie3.firefox(domain_name="familysearch.org"),
+    lambda: browser_cookie3.safari(domain_name="familysearch.org"),
+    lambda: browser_cookie3.edge(domain_name="familysearch.org"),
+    lambda: browser_cookie3.brave(domain_name="familysearch.org"),
+    lambda: browser_cookie3.opera(domain_name="familysearch.org"),
+]:
     try:
-        cj = browser_cookie3.chrome(domain_name="familysearch.org")
-    except:
-        try:
-            cj = browser_cookie3.firefox(domain_name="familysearch.org")
-        except:
-            print(json.dumps({"error": "No browser with FamilySearch cookies found"}))
-            sys.exit(1)
+        cj = loader()
+        break
+    except Exception:
+        continue
+
+if cj is None:
+    print(json.dumps({"error": "No browser with FamilySearch cookies found. Log in at familysearch.org first."}))
+    sys.exit(1)
 
 cookies = []
 for c in cj:

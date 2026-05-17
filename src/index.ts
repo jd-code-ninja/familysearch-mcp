@@ -8,9 +8,10 @@ import * as https from "https";
 import * as http from "http";
 import * as fs from "fs";
 import * as path from "path";
+import * as os from "os";
 import { execFileSync } from "child_process";
 
-const CONFIG_PATH = path.join(process.env.HOME || "~", ".familysearch-mcp", "session.json");
+const CONFIG_PATH = path.join(os.homedir(), ".familysearch-mcp", "session.json");
 const FAMILYSEARCH_URL = "https://www.familysearch.org";
 
 interface StoredCookie {
@@ -28,7 +29,7 @@ interface SessionData {
 
 async function loadSession(): Promise<SessionData | null> {
   try {
-    const data = fs.readFileSync(CONFIG_PATH, "utf-8");
+    const data = await fs.promises.readFile(CONFIG_PATH, "utf-8");
     return JSON.parse(data);
   } catch {
     return null;
@@ -40,8 +41,8 @@ async function saveSession(cookies: StoredCookie[]): Promise<void> {
     cookies,
     timestamp: new Date().toISOString(),
   };
-  fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(session, null, 2));
+  await fs.promises.mkdir(path.dirname(CONFIG_PATH), { recursive: true });
+  await fs.promises.writeFile(CONFIG_PATH, JSON.stringify(session, null, 2));
 }
 
 function getSessionId(cookies: StoredCookie[]): string | null {
@@ -71,7 +72,13 @@ async function fetchWithCookies(url: string, cookies: StoredCookie[]): Promise<{
     }, (res) => {
       let data = "";
       res.on("data", chunk => data += chunk);
-      res.on("end", () => resolve({ status: res.statusCode || 200, body: data }));
+      res.on("end", () => {
+        if (res.statusCode && res.statusCode >= 400) {
+          reject(new Error(`HTTP ${res.statusCode}: ${data.substring(0, 500)}`));
+        } else {
+          resolve({ status: res.statusCode || 200, body: data });
+        }
+      });
     });
     request.on("error", reject);
   });

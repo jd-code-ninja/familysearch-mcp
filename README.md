@@ -4,7 +4,7 @@ A [Model Context Protocol](https://modelcontextprotocol.io) server that exposes 
 
 ## Features
 
-- **33 tools** covering persons, pedigree, relationships, places, sources, memories, collections, and system endpoints
+- **Full API coverage** — persons, pedigree, relationships, places, sources, memories, collections, and system endpoints
 - **Automatic auth** — extracts your FamilySearch session from browser cookies (Arc, Chrome, Firefox)
 - **No API key needed** — uses your existing browser login
 
@@ -23,6 +23,8 @@ npm install
 pip3 install browser-cookie3
 npm run build
 ```
+
+> **Note:** `browser-cookie3` reads your browser's SQLite cookie database directly. Some browsers (Chrome, Arc, Brave) lock the database when running, so you may need to close the browser before extracting cookies for the first time. Once `session.json` is saved, the browser can be reopened.
 
 ## Usage
 

@@ -1,5 +1,5 @@
 {
-  "name": "@opencode-familysearch/mcp",
+  "name": "familysearch-mcp",
   "version": "1.0.0",
   "description": "FamilySearch MCP server using browser-based authentication",
   "main": "dist/index.js",
@@ -9,12 +9,10 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
-    "playwright": "^1.42.0",
-    "zod": "^3.22.0"
+    "@modelcontextprotocol/sdk": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.9.3"
   }
 }
